@@ -28,7 +28,7 @@ export default function LoginPage() {
       toast({
         variant: "destructive",
         title: "Authentication Failed",
-        description: "Could not sign in. Please try again.",
+        description: "Could not sign in/up. Please try again.",
       });
     } finally {
       setIsLoading(null);
@@ -44,8 +44,8 @@ export default function LoginPage() {
         </div>
         <Card className="shadow-lg">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl">Welcome</CardTitle>
-            <CardDescription>Sign in to access your account</CardDescription>
+            <CardTitle className="text-2xl">Create an account</CardTitle>
+            <CardDescription>to start using TenantNotes</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Button 
@@ -54,7 +54,7 @@ export default function LoginPage() {
               onClick={() => handleSignIn("google")}
               disabled={isLoading !== null}
             >
-              {isLoading === 'google' ? <Loader2 className="animate-spin" /> : "Sign in with Google"}
+              {isLoading === 'google' ? <Loader2 className="animate-spin" /> : "Sign up with Google"}
             </Button>
             <Button 
               variant="outline" 
@@ -62,14 +62,20 @@ export default function LoginPage() {
               onClick={() => handleSignIn("github")}
               disabled={isLoading !== null}
             >
-              {isLoading === 'github' ? <Loader2 className="animate-spin" /> : "Sign in with Github"}
+              {isLoading === 'github' ? <Loader2 className="animate-spin" /> : "Sign up with Github"}
             </Button>
           </CardContent>
         </Card>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="#" className="underline">
-            Sign up
+          Already have an account?{" "}
+          <Link href="#" className="underline" onClick={(e) => {
+              e.preventDefault();
+              // Since social auth handles both, we can just trigger the same flow.
+              // For a better UX, you might want different pages or a modal.
+              // For now, let's just make it clear.
+              toast({ title: "Please use a social provider to sign in."});
+          }}>
+            Sign in
           </Link>
         </div>
       </div>
