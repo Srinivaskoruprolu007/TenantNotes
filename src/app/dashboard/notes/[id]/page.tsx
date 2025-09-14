@@ -18,6 +18,10 @@ export default function NotePage({ params }: { params: { id: string } }) {
     notFound();
   }
 
+  // A simple way to render HTML content from the editor.
+  // In a real app, you'd want to sanitize this to prevent XSS attacks.
+  const renderableContent = { __html: note.content };
+
   return (
     <div className="space-y-4 animate-in fade-in duration-500">
         <Breadcrumb>

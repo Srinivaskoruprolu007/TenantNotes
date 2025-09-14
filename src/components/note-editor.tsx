@@ -1,19 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
 import type { Note } from "@/lib/data";
 import { summarizeNote } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { TiptapEditor } from "@/components/tiptap-editor";
 
 interface NoteEditorProps {
   note: Note;
@@ -40,7 +38,9 @@ export function NoteEditor({ note }: NoteEditorProps) {
     setIsSummarizing(true);
     setSummary(null);
     try {
-      const result = await summarizeNote({ noteContent: content });
+      // We need to strip HTML from the content before sending to the AI
+      const plainTextContent = content.replace(/<[^>]*>?/gm, ' ');
+      const result = await summarizeNote({ noteContent: plainTextContent });
       setSummary(result.summary);
     } catch (error) {
       toast({
@@ -54,17 +54,18 @@ export function NoteEditor({ note }: NoteEditorProps) {
   };
   
   const handleSave = () => {
-    // In a real app, you would save the note to the database.
-    // For a new note, you might redirect to the new note's page.
     toast({
         title: isNewNote ? "Note Created!" : "Note Saved!",
         description: `Your note has been successfully ${isNewNote ? 'created' : 'saved'}.`,
     });
     if (isNewNote) {
-        // In a real app, you would get the new ID from the database
         const newId = Math.random().toString(36).substring(2, 9);
         router.push(`/dashboard/notes/${newId}`);
     }
+  };
+  
+  const handleContentChange = (newContent: string) => {
+    setContent(newContent);
   };
 
   return (
@@ -82,18 +83,11 @@ export function NoteEditor({ note }: NoteEditorProps) {
         </div>
         <div className="space-y-2">
           <Label>Content</Label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className="min-h-[400px]"
-                  placeholder="Start writing your note here... You can use Markdown!"
-              />
-              <div className="prose min-h-[400px] w-full rounded-md border border-input p-4 bg-muted/20">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || "Nothing to preview..."}</ReactMarkdown>
-              </div>
-          </div>
+          <TiptapEditor
+            content={content}
+            onChange={handleContentChange}
+            placeholder="Start writing your note here..."
+          />
         </div>
 
         {summary && (

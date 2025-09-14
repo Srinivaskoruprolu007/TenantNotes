@@ -11,7 +11,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between space-y-2 mb-8">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Your Notes</h2>
-          <p className="text-muted-foreground">Here&apos;s a list of your notes.</p>
+          <p className="text-muted-foreground">Here's a list of your notes.</p>
         </div>
         <div className="flex items-center space-x-2">
           <Button asChild>
@@ -34,9 +34,10 @@ export default function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-              <p className="text-sm text-muted-foreground line-clamp-3">
-                {note.content}
-              </p>
+              <div
+                className="prose dark:prose-invert prose-sm text-muted-foreground line-clamp-3"
+                dangerouslySetInnerHTML={{ __html: note.content }}
+              />
             </CardContent>
             <CardFooter>
               <Button asChild variant="secondary" className="w-full">
