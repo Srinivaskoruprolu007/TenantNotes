@@ -1,13 +1,32 @@
+
+'use client';
+
 import { MainNav } from "@/components/main-nav";
 import { UserNav } from "@/components/user-nav";
 import { NotebookText } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
+  
+  if (loading || !user) {
+    return null; 
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
