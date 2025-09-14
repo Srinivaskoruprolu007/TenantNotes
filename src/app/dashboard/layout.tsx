@@ -28,29 +28,21 @@ export default function DashboardLayout({
   }
 
   return (
-    <>
-      <div className="hidden flex-col md:flex">
-        <div className="border-b">
-          <div className="flex h-16 items-center px-4">
-            <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-primary">
-              <NotebookText className="h-6 w-6" />
-              <span className="">TenantNotes</span>
-            </Link>
-            <div className="ml-auto flex items-center space-x-4">
-              <UserNav />
-            </div>
-          </div>
+    <div className="flex min-h-screen w-full flex-col">
+      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+        <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-primary">
+          <NotebookText className="h-6 w-6" />
+          <span className="">TenantNotes</span>
+        </Link>
+        <div className="ml-auto flex items-center gap-4">
+           <UserNav />
         </div>
-        <div className="flex-1 space-y-4 p-8 pt-6">
-          <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-          </div>
-          <MainNav />
-          <div className="mt-8">
+      </header>
+      <main className="flex min-h-[calc(100vh_-_4rem)] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+        <div className="mx-auto grid w-full max-w-6xl gap-2">
             {children}
-          </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
