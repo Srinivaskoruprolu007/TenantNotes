@@ -24,7 +24,7 @@ export default function DashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {notes.map((note) => (
-          <Card key={note.id} className="flex flex-col">
+          <Card key={note.id} className="flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
             <CardHeader>
               <CardTitle className="hover:text-primary transition-colors">
                 <Link href={`/dashboard/notes/${note.id}`}>{note.title}</Link>

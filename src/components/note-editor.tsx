@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles } from "lucide-react";
 import type { Note } from "@/lib/data";
 import { summarizeNote } from "@/app/actions";
@@ -83,26 +82,18 @@ export function NoteEditor({ note }: NoteEditorProps) {
         </div>
         <div className="space-y-2">
           <Label>Content</Label>
-          <Tabs defaultValue="write">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="write">Write</TabsTrigger>
-              <TabsTrigger value="preview">Preview</TabsTrigger>
-            </TabsList>
-            <TabsContent value="write">
-                <Textarea
-                    id="content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="min-h-[300px] rounded-t-none"
-                    placeholder="Start writing your note here... You can use Markdown!"
-                />
-            </TabsContent>
-            <TabsContent value="preview">
-                <div className="prose min-h-[300px] w-full rounded-md border border-input p-4">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || "Nothing to preview..."}</ReactMarkdown>
-                </div>
-            </TabsContent>
-          </Tabs>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Textarea
+                  id="content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="min-h-[400px]"
+                  placeholder="Start writing your note here... You can use Markdown!"
+              />
+              <div className="prose min-h-[400px] w-full rounded-md border border-input p-4 bg-muted/20">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || "Nothing to preview..."}</ReactMarkdown>
+              </div>
+          </div>
         </div>
 
         {summary && (
