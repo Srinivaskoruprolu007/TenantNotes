@@ -3,7 +3,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { notes as initialNotes, type Note } from "@/lib/data";
+import { notes as initialNotes } from "@/lib/data";
+import type { Note } from "@/lib/schemas/note";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { format } from 'date-fns';

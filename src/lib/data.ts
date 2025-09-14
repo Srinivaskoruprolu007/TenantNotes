@@ -1,10 +1,6 @@
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Note } from "@/lib/schemas/note";
+import type { Subscription } from "@/lib/schemas/subscription";
+import type { User } from "@/lib/schemas/user";
 
 export const notes: Note[] = [
   {
@@ -37,23 +33,9 @@ export const notes: Note[] = [
   },
 ];
 
-export type User = {
-  name: string;
-  email: string;
-};
-
 export const user: User = {
   name: "Jane Doe",
   email: "jane.doe@example.com",
-};
-
-export type Subscription = {
-  plan: 'Free' | 'Pro';
-  noteCount: number;
-  noteLimit: number;
-  userCount: number;
-  userLimit: number;
-  billing_period_ends: string;
 };
 
 export const subscription: Subscription = {

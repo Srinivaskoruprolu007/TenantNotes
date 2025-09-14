@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import type { Note } from "@/lib/data";
+import type { Note } from "@/lib/schemas/note";
 
 export default function NewNotePage() {
   // In a real app, this would be a new, unsaved note object.
