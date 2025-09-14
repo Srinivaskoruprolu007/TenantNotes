@@ -13,7 +13,7 @@ import { auth, googleProvider, githubProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function LoginPage() {
   const router = useRouter();

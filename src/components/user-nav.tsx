@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { CreditCard, LogOut, User } from "lucide-react";
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/hooks/use-auth";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";

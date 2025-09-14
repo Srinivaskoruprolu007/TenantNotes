@@ -5,7 +5,7 @@ import { MainNav } from "@/components/main-nav";
 import { UserNav } from "@/components/user-nav";
 import { NotebookText } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

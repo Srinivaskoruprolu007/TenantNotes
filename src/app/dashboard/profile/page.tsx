@@ -6,25 +6,27 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { MainNav } from "@/components/main-nav";
+import { Loader2 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, reloadUser } = useAuth();
   const { toast } = useToast();
   const [displayName, setDisplayName] = useState(user?.displayName || "");
-  const [email, setEmail] = useState(user?.email || "");
+  const [isLoading, setIsLoading] = useState(false);
   const userAvatar = PlaceHolderImages.find((img) => img.id === "user-avatar");
 
   const handleProfileUpdate = async () => {
     if (!user) return;
+    setIsLoading(true);
     try {
       await updateProfile(user, { displayName });
-      // In a real app, you would also need to handle email updates via a verification flow.
+      await reloadUser(); 
       toast({
         title: "Profile Updated",
         description: "Your profile has been successfully updated.",
@@ -35,6 +37,8 @@ export default function ProfilePage() {
         title: "Update Failed",
         description: error.message,
       });
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -65,9 +69,9 @@ export default function ProfilePage() {
                   ) : (
                   userAvatar && <AvatarImage src={userAvatar.imageUrl} alt="User avatar" data-ai-hint={userAvatar.imageHint} />
                   )}
-                  <AvatarFallback className="text-3xl">{user.displayName?.charAt(0) || user.email?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-3xl">{displayName?.charAt(0) || user.email?.charAt(0)}</AvatarFallback>
               </Avatar>
-              <Button variant="outline">Change Photo</Button>
+              <Button variant="outline" disabled>Change Photo</Button>
             </div>
             <div className="space-y-2">
               <Label htmlFor="displayName">Display Name</Label>
@@ -75,12 +79,15 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} disabled />
+              <Input id="email" type="email" value={user.email || ""} disabled />
               <p className="text-xs text-muted-foreground">
                 Contact support to change your email address.
               </p>
             </div>
-            <Button onClick={handleProfileUpdate}>Save Changes</Button>
+            <Button onClick={handleProfileUpdate} disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+            </Button>
           </CardContent>
         </Card>
       </div>
