@@ -28,7 +28,7 @@ export default function LoginPage() {
       toast({
         variant: "destructive",
         title: "Authentication Failed",
-        description: "Could not sign in/up. Please try again.",
+        description: "Could not sign in/up. Please check console settings and try again.",
       });
     } finally {
       setIsLoading(null);
@@ -70,9 +70,6 @@ export default function LoginPage() {
           Already have an account?{" "}
           <Link href="#" className="underline" onClick={(e) => {
               e.preventDefault();
-              // Since social auth handles both, we can just trigger the same flow.
-              // For a better UX, you might want different pages or a modal.
-              // For now, let's just make it clear.
               toast({ title: "Please use a social provider to sign in."});
           }}>
             Sign in
