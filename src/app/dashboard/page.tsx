@@ -14,9 +14,11 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Here&apos;s a list of your notes.</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            New Note
+          <Button asChild>
+            <Link href="/dashboard/notes/new">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              New Note
+            </Link>
           </Button>
         </div>
       </div>

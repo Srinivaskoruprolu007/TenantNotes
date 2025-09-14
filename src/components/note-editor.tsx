@@ -7,23 +7,34 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles, Terminal } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import type { Note } from "@/lib/data";
 import { summarizeNote } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface NoteEditorProps {
   note: Note;
 }
 
 export function NoteEditor({ note }: NoteEditorProps) {
+  const router = useRouter();
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const [summary, setSummary] = useState<string | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const { toast } = useToast();
+  const isNewNote = note.id === "new";
 
   const handleSummarize = async () => {
+    if (!content) {
+      toast({
+        variant: "destructive",
+        title: "Content Required",
+        description: "Please write some content before summarizing.",
+      });
+      return;
+    }
     setIsSummarizing(true);
     setSummary(null);
     try {
@@ -42,22 +53,30 @@ export function NoteEditor({ note }: NoteEditorProps) {
   
   const handleSave = () => {
     // In a real app, you would save the note to the database.
+    // For a new note, you might redirect to the new note's page.
     toast({
-        title: "Note Saved!",
-        description: "Your changes have been successfully saved.",
+        title: isNewNote ? "Note Created!" : "Note Saved!",
+        description: `Your note has been successfully ${isNewNote ? 'created' : 'saved'}.`,
     });
+    if (isNewNote) {
+        // In a real app, you would get the new ID from the database
+        const newId = Math.random().toString(36).substring(2, 9);
+        router.push(`/dashboard/notes/${newId}`);
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Edit Note</CardTitle>
-        <CardDescription>Make changes to your note and get an AI summary.</CardDescription>
+        <CardTitle>{isNewNote ? "Create New Note" : "Edit Note"}</CardTitle>
+        <CardDescription>
+          {isNewNote ? "Fill out the details for your new note." : "Make changes to your note and get an AI summary."}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
-          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Note title" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="content">Content</Label>
@@ -79,7 +98,7 @@ export function NoteEditor({ note }: NoteEditorProps) {
         )}
       </CardContent>
       <CardFooter className="justify-between">
-        <Button onClick={handleSummarize} variant="secondary" disabled={isSummarizing}>
+        <Button onClick={handleSummarize} variant="secondary" disabled={isSummarizing || !content}>
           {isSummarizing ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -87,7 +106,7 @@ export function NoteEditor({ note }: NoteEditorProps) {
           )}
           Summarize with AI
         </Button>
-        <Button onClick={handleSave}>Save Changes</Button>
+        <Button onClick={handleSave} disabled={!title || !content}>{isNewNote ? "Create Note" : "Save Changes"}</Button>
       </CardFooter>
     </Card>
   );
