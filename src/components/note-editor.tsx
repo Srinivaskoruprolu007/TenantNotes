@@ -1,12 +1,24 @@
+
 "use client";
 
 import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Trash2 } from "lucide-react";
 import type { Note } from "@/lib/data";
 import { summarizeNote } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -38,7 +50,6 @@ export function NoteEditor({ note }: NoteEditorProps) {
     setIsSummarizing(true);
     setSummary(null);
     try {
-      // We need to strip HTML from the content before sending to the AI
       const plainTextContent = content.replace(/<[^>]*>?/gm, ' ');
       const result = await summarizeNote({ noteContent: plainTextContent });
       setSummary(result.summary);
@@ -64,17 +75,50 @@ export function NoteEditor({ note }: NoteEditorProps) {
     }
   };
   
+  const handleDelete = () => {
+    toast({
+        title: "Note Deleted",
+        description: "Your note has been successfully deleted.",
+    });
+    router.push("/dashboard");
+  };
+
   const handleContentChange = (newContent: string) => {
     setContent(newContent);
   };
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{isNewNote ? "Create New Note" : "Edit Note"}</CardTitle>
-        <CardDescription>
-          {isNewNote ? "Fill out the details for your new note." : "Make changes to your note and get an AI summary."}
-        </CardDescription>
+      <CardHeader className="flex flex-row items-start justify-between">
+        <div>
+            <CardTitle>{isNewNote ? "Create New Note" : "Edit Note"}</CardTitle>
+            <CardDescription>
+            {isNewNote ? "Fill out the details for your new note." : "Make changes to your note and get an AI summary."}
+            </CardDescription>
+        </div>
+        {!isNewNote && (
+           <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="icon">
+                    <Trash2 />
+                    <span className="sr-only">Delete Note</span>
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your
+                    note and remove your data from our servers.
+                </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+            </AlertDialog>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">

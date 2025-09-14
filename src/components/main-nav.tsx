@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Notebook, Settings } from "lucide-react";
+import { LayoutDashboard, Notebook, Settings, User } from "lucide-react";
 
 export function MainNav({
   className,
@@ -18,6 +18,12 @@ export function MainNav({
       label: "Notes",
       icon: Notebook,
       active: pathname === "/dashboard" || pathname.startsWith('/dashboard/notes'),
+    },
+    {
+      href: "/dashboard/profile",
+      label: "Profile",
+      icon: User,
+      active: pathname === "/dashboard/profile",
     },
     {
       href: "/dashboard/admin",
