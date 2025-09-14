@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     }
 
     // Update user subscription in your database
-    await updateUserSubscription(userId, planId, paymentId);
+    await updateUserSubscription(userId, planId);
 
     return NextResponse.json({
       success: true,
