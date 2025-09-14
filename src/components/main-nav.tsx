@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Notebook, Settings, User } from "lucide-react";
+import { Notebook, User, Settings } from "lucide-react";
 
 export function MainNav({
   className,
@@ -35,7 +35,7 @@ export function MainNav({
 
   return (
     <nav
-      className={cn("flex flex-col space-y-2", className)}
+      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
       {routes.map((route) => (
@@ -43,14 +43,13 @@ export function MainNav({
           key={route.href}
           href={route.href}
           className={cn(
-            "flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+            "text-sm font-medium transition-colors hover:text-primary",
             route.active
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-muted/50"
+              ? "text-black dark:text-white"
+              : "text-muted-foreground"
           )}
         >
-          <route.icon className="h-4 w-4" />
-          <span>{route.label}</span>
+          {route.label}
         </Link>
       ))}
     </nav>
