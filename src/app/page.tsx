@@ -8,25 +8,40 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotebookText, Loader2 } from "lucide-react";
-import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, AuthProvider as FirebaseAuthProvider } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/auth-context";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<"google" | "github" | "email" | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleSocialSignIn = async (provider: "google" | "github") => {
-    setIsLoading(provider);
-    const authProvider = provider === 'google' ? googleProvider : githubProvider;
-    try {
-      await signInWithPopup(auth, authProvider);
+  
+  useEffect(() => {
+    if (!loading && user) {
       router.push("/dashboard");
+    }
+  }, [user, loading, router]);
+
+
+  const handleSocialSignIn = async (providerName: "google" | "github") => {
+    setIsLoading(providerName);
+    let provider: FirebaseAuthProvider;
+    if (providerName === 'google') {
+        provider = googleProvider;
+    } else {
+        provider = githubProvider;
+    }
+    
+    try {
+      await signInWithPopup(auth, provider);
+      // The redirect is now handled by the useEffect hook
     } catch (error: any) {
       console.error("Authentication failed:", error);
       toast({
@@ -43,7 +58,7 @@ export default function LoginPage() {
     setIsLoading("email");
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
+      // The redirect is now handled by the useEffect hook
     } catch (error: any) {
       console.error("Sign up failed:", error);
       toast({
@@ -60,7 +75,7 @@ export default function LoginPage() {
     setIsLoading("email");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
+      // The redirect is now handled by the useEffect hook
     } catch (error: any) {
       console.error("Sign in failed:", error);
       toast({
@@ -73,6 +88,13 @@ export default function LoginPage() {
     }
   };
 
+  if (loading || user) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
