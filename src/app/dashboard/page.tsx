@@ -1,12 +1,27 @@
+
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { notes } from "@/lib/data";
+import { notes as initialNotes, type Note } from "@/lib/data";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { format } from 'date-fns';
 import { MainNav } from "@/components/main-nav";
+import { useState, useEffect } from "react";
 
 export default function DashboardPage() {
+  const [notes, setNotes] = useState<Note[]>(initialNotes);
+
+  useEffect(() => {
+    const deletedNoteId = sessionStorage.getItem('deletedNoteId');
+    if (deletedNoteId) {
+      setNotes(prevNotes => prevNotes.filter(note => note.id !== deletedNoteId));
+      sessionStorage.removeItem('deletedNoteId');
+    }
+  }, []);
+
+
   return (
     <div className="grid gap-6 md:grid-cols-[180px_1fr]">
        <aside>

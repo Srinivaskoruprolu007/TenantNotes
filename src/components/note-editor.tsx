@@ -76,6 +76,9 @@ export function NoteEditor({ note }: NoteEditorProps) {
   };
   
   const handleDelete = () => {
+    // In a real app, this would be an API call.
+    // Here, we'll use session storage to let the dashboard know.
+    sessionStorage.setItem('deletedNoteId', note.id);
     toast({
         title: "Note Deleted",
         description: "Your note has been successfully deleted.",
