@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and update only their own profile
+    match /users/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Notes permissions
+    match /notes/{noteId} {
+      // Users can create notes only for themselves
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Users can read their own notes
+      allow read: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      
+      // Users can update only their own notes
+      allow update: if request.auth != null && 
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == resource.data.userId; // Prevent changing owner
+      
+      // Users can delete only their own notes
+      allow delete: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+    }
+
+    // Subscriptions are read-only for users
+    match /subscriptions/{subscriptionId} {
+      allow read: if request.auth != null;
+      // Only admin can create/update subscriptions
+      allow create, update: if false; // Disabled - should be managed through Firebase Admin SDK
+    }
+  }
+}
