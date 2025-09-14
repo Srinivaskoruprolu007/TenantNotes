@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { verifyPayment } from '@/lib/razorpay';
 import { updateUserSubscription } from '@/lib/firestore';
+import { createHmac } from 'crypto';
 
 export async function POST(request: Request) {
   try {
@@ -9,7 +10,7 @@ export async function POST(request: Request) {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || '';
 
     // Verify the webhook signature
-    const hmac = crypto.createHmac('sha256', webhookSecret);
+    const hmac = createHmac('sha256', webhookSecret);
     hmac.update(body);
     const generatedSignature = hmac.digest('hex');
 
@@ -40,7 +41,6 @@ export async function POST(request: Request) {
         if (subscription.notes?.userId) {
           await updateUserSubscription(
             subscription.notes.userId, 
-            subscription.plan_id,
             subscription.id
           );
         }
