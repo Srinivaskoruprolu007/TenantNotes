@@ -10,7 +10,6 @@ import { MainNav } from "@/components/main-nav";
 import { useState, useEffect } from "react";
 import { auth } from "@/lib/firebase";
 import { getNotesByUser, Note, getUserProfile, formatStorageSize } from "@/lib";
-import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
@@ -51,7 +50,7 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
-  const storagePercentage = userData 
+  const storagePercentage = userData
     ? Math.min(Math.round((userData.usedStorage / userData.storageLimit) * 100), 100)
     : 0;
 
@@ -134,7 +133,7 @@ export default function DashboardPage() {
                 )}
               </div>
               <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary mt-2">
-                <div 
+                <div
                   className={`h-full ${isStorageCritical ? 'bg-destructive' : 'bg-primary'} transition-all duration-300`}
                   style={{ width: `${storagePercentage}%` }}
                 />
@@ -203,8 +202,8 @@ export default function DashboardPage() {
                     {note.tags && note.tags.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-1">
                         {note.tags.slice(0, 3).map((tag) => (
-                          <span 
-                            key={tag} 
+                          <span
+                            key={tag}
                             className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground"
                           >
                             {tag}
